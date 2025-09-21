@@ -9,9 +9,9 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 // import { DashboardTableOfContents } from "@/components/toc";
 
 interface DocPageProps {
-  params: {
+  params: Promise<{
     slug: string[];
-  };
+  }>;
 }
 
 async function getDocFromParams({ params }: DocPageProps) {
