@@ -10,7 +10,7 @@ export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-background border-b border-border sticky top-0 z-50">
+    <nav className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Left Section: Logo and Main Links */}
@@ -21,7 +21,7 @@ export function Navigation() {
             >
               단기과열종목 계산기
             </Link>
-            
+
             {/* Main navigation links next to logo */}
             <div className="hidden md:flex items-center gap-3">
               <Button asChild variant="ghost" size="sm">
