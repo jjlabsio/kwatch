@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "@repo/ui/components/sonner";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -104,6 +105,7 @@ export default function RootLayout({
             <Footer />
           </Providers>
         </div>
+        <Toaster />
         <Analytics />
       </body>
     </html>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import HomeContent from "./home-content";
+import HomeContent from "@/components/home-content";
 
 export const metadata: Metadata = {
   title: "단기과열종목 계산기",
