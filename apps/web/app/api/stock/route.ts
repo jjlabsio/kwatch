@@ -35,6 +35,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { symbol } = await request.json();
 
+    console.log("symbol :>> ", symbol);
+
     if (!symbol) {
       return NextResponse.json(
         { error: "종목 코드를 입력해주세요." },
