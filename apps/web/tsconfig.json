@@ -3,6 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
+      "@prisma/*": ["./generated/prisma/*"],
       "@repo/ui/*": ["../../packages/ui/src/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]
     },
