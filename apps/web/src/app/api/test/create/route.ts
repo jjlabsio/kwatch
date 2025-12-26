@@ -1,9 +1,9 @@
 import { dateOnlyToUtc } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
-import { StockMarketMeasureCreateInput } from "@prisma/models";
+import type { Prisma } from "@prisma/client";
 
 export async function GET() {
-  const dummy: StockMarketMeasureCreateInput[] = [
+  const dummy: Prisma.StockMarketMeasureCreateInput[] = [
     {
       stockCode: "123456",
       type: "ATTENTION",

@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { dateOnlyToUtc, utcDateToDateOnly } from "@/lib/date";
-import { StockMarketMeasureCreateInput } from "@prisma/models";
+import type { Prisma } from "@prisma/client";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -13,7 +13,7 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const dummy: StockMarketMeasureCreateInput[] = [
+  const dummy: Prisma.StockMarketMeasureCreateInput[] = [
     {
       stockCode: "123456",
       type: "ATTENTION",
