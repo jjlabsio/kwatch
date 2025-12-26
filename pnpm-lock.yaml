@@ -56,6 +56,9 @@ importers:
       korea-business-day:
         specifier: ^0.1.4
         version: 0.1.4
+      ky:
+        specifier: ^1.14.1
+        version: 1.14.1
       lucide-react:
         specifier: ^0.475.0
         version: 0.475.0(react@19.1.1)
@@ -2966,6 +2969,10 @@ packages:
 
   korea-business-day@0.1.4:
     resolution: {integrity: sha512-O5Z67suKnIJb/cUcW3BPiiG95B765y2bFjhmiYj+jTYQN1BPoNkSV4GD1mOhVY6dJdmR+cfzhfnC19E9L+fgXg==}
+
+  ky@1.14.1:
+    resolution: {integrity: sha512-hYje4L9JCmpEQBtudo+v52X5X8tgWXUYyPcxKSuxQNboqufecl9VMWjGiucAFH060AwPXHZuH+WB2rrqfkmafw==}
+    engines: {node: '>=18'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -7541,6 +7548,8 @@ snapshots:
   kind-of@6.0.3: {}
 
   korea-business-day@0.1.4: {}
+
+  ky@1.14.1: {}
 
   levn@0.4.1:
     dependencies:

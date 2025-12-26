@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
+import { dateOnlyToUtc, utcDateToDateOnly } from "@/lib/date";
 import { StockMarketMeasureCreateInput } from "@prisma/models";
-import { format } from "date-fns";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -12,22 +12,45 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-type test = StockMarketMeasureCreateInput;
-
 async function main() {
-  // await prisma.stockMarketMeasure.create({
-  //   data: {
-  //     stockCode: "123456",
-  //     type: "ATTENTION",
-  //     startAt: new Date("2025-12-26"),
-  //     endAt: new Date("2025-12-30"),
-  //   },
-  // });
+  const dummy: StockMarketMeasureCreateInput[] = [
+    {
+      stockCode: "123456",
+      type: "ATTENTION",
+      startAt: dateOnlyToUtc("2025-12-26"),
+      endAt: dateOnlyToUtc("2025-12-30"),
+    },
+    {
+      stockCode: "123456",
+      type: "OVERHEATED",
+      startAt: dateOnlyToUtc("2025-12-27"),
+      endAt: dateOnlyToUtc("2025-12-31"),
+    },
+    {
+      stockCode: "123456",
+      type: "OVERHEATED_NOTICE",
+      startAt: dateOnlyToUtc("2025-12-30"),
+      endAt: dateOnlyToUtc("2026-01-03"),
+    },
+    {
+      stockCode: "123456",
+      type: "RISK",
+      startAt: dateOnlyToUtc("2026-01-02"),
+      endAt: dateOnlyToUtc("2026-01-05"),
+    },
+  ];
 
-  const data = await prisma.stockMarketMeasure.findMany();
-  const formatted = data.map((obj) => obj.startAt);
-  formatted.forEach((el) => {
-    console.log("data :>> ", el, typeof el, format(el, "yyyy-MM-dd"));
+  await prisma.stockMarketMeasure.createMany({
+    data: dummy,
+  });
+
+  const data = await prisma.stockMarketMeasure.findMany({
+    orderBy: {
+      startAt: "asc",
+    },
+  });
+  data.forEach((el) => {
+    console.log("data :>> ", el, utcDateToDateOnly(el.startAt));
   });
 }
 
