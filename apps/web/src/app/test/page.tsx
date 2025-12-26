@@ -1,6 +1,8 @@
 import type { GetTestResponse } from "@/types/api";
 import ky from "ky";
 
+export const dynamic = "force-dynamic";
+
 const fetchData = async (): Promise<GetTestResponse> => {
   const data = await ky
     .get(`${process.env.NEXT_PUBLIC_API_URL}/api/test`)
