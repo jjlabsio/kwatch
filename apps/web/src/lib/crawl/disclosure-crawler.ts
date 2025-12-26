@@ -1,7 +1,8 @@
-import type { Page } from "@playwright/test";
+import type { Page, Locator, BrowserContext, Browser } from "@playwright/test";
 import { MarketMeasureType } from "@prisma/client";
 import { parseOverheatedNoticePopup } from "./disclosure-parser";
 import { parseCurrentPageNumber, setupDisclosureSearchPage } from "./search-page-setup";
+import { CRAWL_CONFIG } from "./constants";
 
 type DisclosureType = Extract<MarketMeasureType, "OVERHEATED_NOTICE">;
 
@@ -91,6 +92,19 @@ export type DisclosureCrawlResult = {
 };
 
 /**
+ * 팝업 클릭 및 페이지 반환
+ * @param cell 클릭할 셀
+ * @param page 현재 페이지
+ * @returns 팝업 페이지
+ */
+async function handlePopupClick(cell: Locator, page: Page): Promise<Page> {
+  const popupPagePromise = page.waitForEvent("popup");
+  const link = await cell.getByRole("link").first();
+  await link.click();
+  return await popupPagePromise;
+}
+
+/**
  * 공시 정보 크롤링
  * @param targetDate 검색할 날짜
  * @param disclosureType 공시 유형
@@ -100,48 +114,60 @@ export const crawlDisclosures = async (
   targetDate: Date,
   disclosureType: DisclosureType
 ): Promise<DisclosureCrawlResult[]> => {
-  const { marketActionType, linkRegex, parsePopupFn } = disclosureRuleMap[disclosureType];
+  const { marketActionType, linkRegex, parsePopupFn } =
+    disclosureRuleMap[disclosureType];
 
-  const { page, paginationText, totalPageCount, context, browser } =
-    await setupDisclosureSearchPage(targetDate, marketActionType);
+  let context: BrowserContext | null = null;
+  let browser: Browser | null = null;
 
-  const results: DisclosureCrawlResult[] = [];
+  try {
+    const setupResult = await setupDisclosureSearchPage(
+      targetDate,
+      marketActionType
+    );
+    context = setupResult.context;
+    browser = setupResult.browser;
+    const { page, totalPageCount } = setupResult;
 
-  while (true) {
-    await page.waitForTimeout(1000);
+    const results: DisclosureCrawlResult[] = [];
+    let currentPageNumber = 1;
 
-    const cells = await page.getByRole("cell", { name: linkRegex }).all();
+    // 페이지별 크롤링
+    while (currentPageNumber <= totalPageCount) {
+      await page.waitForTimeout(CRAWL_CONFIG.TIMEOUT.PAGE_LOAD);
 
-    for (const cell of cells) {
-      const popupPagePromise = page.waitForEvent("popup");
+      const cells = await page.getByRole("cell", { name: linkRegex }).all();
 
-      const link = await cell.getByRole("link").first();
-      await link.click();
+      for (const cell of cells) {
+        let popupPage: Page | null = null;
+        try {
+          popupPage = await handlePopupClick(cell, page);
+          const stockCode = await parsePopupFn(popupPage);
+          results.push({ stockCode, url: popupPage.url() });
+        } finally {
+          if (popupPage) {
+            await popupPage.close();
+          }
+        }
+      }
 
-      const popupPage = await popupPagePromise;
+      // 마지막 페이지 확인
+      if (currentPageNumber === totalPageCount) {
+        break;
+      }
 
-      const stockCode = await parsePopupFn(popupPage);
-
-      results.push({ stockCode, url: popupPage.url() });
-      await popupPage.close();
+      await page.locator(CRAWL_CONFIG.SELECTOR.NEXT_PAGE).click();
+      currentPageNumber++;
     }
 
-    const currentPageText = await page
-      .locator("#main-contents .paging-group .info")
-      .innerText();
-    const currentPageNumber = parseCurrentPageNumber(currentPageText);
-
-    if (currentPageNumber === totalPageCount) {
-      break;
+    return results;
+  } finally {
+    // 에러 발생 시에도 브라우저 정리 보장
+    if (context) {
+      await context.close();
     }
-
-    await page.locator(".next").click();
+    if (browser) {
+      await browser.close();
+    }
   }
-
-  // 컨텍스트, 브라우저 종료
-  // 크롤링 끝
-  await context.close();
-  await browser.close();
-
-  return results;
 };
