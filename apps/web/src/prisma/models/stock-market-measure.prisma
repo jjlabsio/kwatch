@@ -1,0 +1,32 @@
+enum MarketMeasureType {
+    ATTENTION // 투자주의
+    WARNING // 투자경고
+    WARNING_NOTICE // 투자경고 예고
+    RISK // 투자위험
+    RISK_NOTICE // 투자위험 예고
+    TRADING_SUSPENSION // 매매거래정지
+    TRADING_SUSPENSION_NOTICE // 매매거래정지 예고
+    OVERHEATED // 단기과열
+    OVERHEATED_NOTICE // 단기과열 예고
+}
+
+model StockMarketMeasure {
+    id        String @id @default(cuid())
+    stockCode String @map("stock_code") @db.Char(6)
+
+    type MarketMeasureType
+
+    startAt DateTime  @map("start_at") @db.Date
+    endAt   DateTime? @map("end_at") @db.Date
+
+    reason String? // 거래소 사유 (옵션)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([stockCode, type, startAt])
+    @@index([stockCode])
+    @@index([type])
+    @@index([startAt, endAt])
+    @@map("stock_market_measures")
+}

@@ -6,7 +6,7 @@ const envFile =
 config({ path: envFile });
 
 export default defineConfig({
-  schema: "src/prisma/schema.prisma",
+  schema: "src/prisma",
   migrations: {
     path: "src/prisma/migrations",
     seed: "tsx src/prisma/script.ts",
