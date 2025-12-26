@@ -15,6 +15,7 @@
     "build:content": "contentlayer2 build",
     "db:reset": "NODE_ENV=development pnpm exec prisma generate",
     "db:push": "NODE_ENV=development npx prisma db push",
+    "db:pull": "NODE_ENV=development npx prisma db pull",
     "db:migrate": "NODE_ENV=development pnpm exec prisma migrate dev",
     "db:migrate:deploy": "pnpm exec prisma migrate deploy",
     "db:generate": "NODE_ENV=development pnpm exec prisma generate",
