@@ -1,4 +1,4 @@
-import { allPosts, Post } from "../../../.contentlayer/generated";
+import { allPosts, Post } from "../../../../.contentlayer/generated";
 import {
   Card,
   CardContent,

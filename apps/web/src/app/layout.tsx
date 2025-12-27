@@ -98,7 +98,10 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
       >
-        <div className="flex min-h-screen flex-col">
+        <Providers>{children}</Providers>
+        <Toaster />
+        <Analytics />
+        {/* <div className="flex min-h-screen flex-col">
           <Providers>
             <Navigation />
             <main className="flex-1">{children}</main>
@@ -106,7 +109,7 @@ export default function RootLayout({
           </Providers>
         </div>
         <Toaster />
-        <Analytics />
+        <Analytics /> */}
       </body>
     </html>
   );
